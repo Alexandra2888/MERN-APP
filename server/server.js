@@ -14,19 +14,18 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const corsOptions = {
-    origin: "*",
-};
-
-app.use(cors(corsOptions));
+app.use(cors({
+    origin: process.env.NODE_ENV === 'production'
+        ? 'https://mern-app-x6m7.onrender.com'
+        : 'http://localhost:5173'
+}));
 
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static('client/build'));
+    app.use(express.static(path.join(__dirname, '../client/dist')));
     app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+        res.sendFile(path.join(__dirname, '../client/dist/index.html'));
     });
 }
-
 //for deploying be + fe separately
 
 // app.use("/api/notes", noteRoute);

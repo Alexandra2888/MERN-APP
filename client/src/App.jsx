@@ -12,24 +12,32 @@ function App() {
     }, []);
 
     const fetchNotes = async () => {
+        setLoading(true);
         try {
-            const response = await axios.get("http://localhost:5000/api/notes");
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/notes`);
             setNotes(response.data);
+            setError(null);
         } catch (err) {
             console.error('Error fetching notes:', err);
             setError(err.message);
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
-            await axios.post("http://localhost:5000/api/notes", { text: newNote });
+            await axios.post(`${import.meta.env.VITE_API_URL}/api/notes`, { text: newNote });
             setNewNote('');
+            setError(null);
             fetchNotes();
         } catch (err) {
             console.error('Error creating note:', err);
             setError(err.message);
+        } finally {
+            setLoading(false);
         }
     };
 
